@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budget Space 2026</title>
+    <title>Budget Dashboard 2026</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Base Global Theme - Sophisticated Light Minimalist (Notion/Linear Style) */
+        /* Base Global Theme - Sophisticated Light Minimalist */
         body { 
             background-color: #f8fafc;
             color: #0f172a; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
         }
@@ -28,18 +28,18 @@
             font-size: 1.5rem;
         }
 
-        /* Clean & Sharp Premium Cards */
+        /* Clean Card Style */
         .card { 
             background: #ffffff;
             border: 1px solid #e2e8f0; 
             border-radius: 0.75rem; 
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             margin-bottom: 1.5rem; 
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .card:hover {
             border-color: #cbd5e1;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
         .card-title { 
             color: #64748b; 
@@ -49,7 +49,6 @@
             letter-spacing: 0.5px;
         }
         
-        /* Typography Scale & Soft Colors */
         .amount-value { font-size: 1.5rem; font-weight: 700; color: #0f172a; letter-spacing: -0.5px; }
         .amount-sub { font-size: 0.8rem; color: #64748b; }
         
@@ -79,12 +78,8 @@
             font-size: 0.85rem;
             font-weight: 500;
         }
-        .form-select-sm:focus {
-            border-color: #64748b;
-            box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.15);
-        }
 
-        /* Slate/Muted Corporate Tables */
+        /* Tables Minimalist */
         .table-rincian { color: #334155; }
         .table-hover tbody tr:hover {
             background-color: #f8fafc !important;
@@ -105,7 +100,6 @@
             border-bottom: 1px solid #e2e8f0; 
         }
         
-        /* Clean Text Trigger */
         .btn-kategori { 
             color: #0f172a; 
             cursor: pointer; 
@@ -117,7 +111,7 @@
         }
         .btn-kategori:hover { color: #64748b; text-decoration: underline; }
 
-        /* Elegant Pastel Matt Badges */
+        /* Badges */
         .badge { font-weight: 600; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; }
         .bg-success { background-color: #e2fbe8 !important; color: #1e7e34 !important; border: 1px solid #c3f6d2; }
         .bg-danger { background-color: #ffebe9 !important; color: #ce3c3e !important; border: 1px solid #ffd3d0; }
@@ -128,18 +122,13 @@
         .spinner-border { color: #64748b !important; }
         .chart-container { position: relative; height: 260px; width: 100%; }
 
-        /* Minimalist Modal Pop-up */
         .modal-content {
             background: #ffffff;
             border: 1px solid #cbd5e1;
             border-radius: 0.75rem;
             color: #0f172a;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
-        .modal-header, .modal-footer {
-            border-color: #f1f5f9;
-            background: #f8fafc;
-        }
+        .modal-header, .modal-footer { border-color: #f1f5f9; background: #f8fafc; }
         .modal-section-title { font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
     </style>
 </head>
@@ -313,9 +302,9 @@
         const allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
         // =======================================================================
-        // PASTIKAN PASTE URL WEB APP GOOGLE SCRIPT ANDA DI SINI
+        // GANTI BAGIAN INI DENGAN URL WEB APP GOOGLE SCRIPT ANDA
         // =======================================================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbzbqicqOwjiSu6peVIi7LGVLARl2q89eaQVZ0rXnnbxL3EdeeFR_f6baq4FWv9trjn7/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbwOve4uEovWcl6jP_6pA6yvN3X-D7NlE0_T0vWj6f9m5M/exec"; 
 
         function formatIDR(value) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
@@ -327,7 +316,7 @@
 
             fetch(API_URL)
                 .then(response => {
-                    if (!response.ok) throw new Error("Gagal mengambil data dari Google Sheet.");
+                    if (!response.ok) throw new Error("Gagal mengambil data dari API.");
                     return response.json();
                 })
                 .then(data => {
@@ -338,7 +327,7 @@
                     validateAndFilter(); 
                 })
                 .catch(err => {
-                    alert('Error: ' + err.message);
+                    alert('Error Hubungan API: ' + err.message);
                     document.getElementById('loader').style.display = 'none';
                 });
         };
@@ -366,7 +355,7 @@
                 return total;
             };
             
-            const rangeRealPend = sumRange(globalData.real बारी.pendapatan || globalData.realisasi.pendapatan, startIdx, endIdx);
+            const rangeRealPend = sumRange(globalData.realisasi.pendapatan, startIdx, endIdx);
             const rangeBudPend = sumRange(globalData.budget.pendapatan, startIdx, endIdx);
             const rangeRealBiaya = sumRange(globalData.realisasi.biaya, startIdx, endIdx);
             const rangeBudBiaya = sumRange(globalData.budget.biaya, startIdx, endIdx);
