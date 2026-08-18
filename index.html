@@ -3,172 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Clean Budget Space 2026</title>
+    <title>Budget Space 2026</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Base Global Theme - Gen Z Dark Neo Space */
+        /* Base Global Theme - Sophisticated Light Minimalist (Notion/Linear Style) */
         body { 
-            background: linear-gradient(135deg, #0f1123 0%, #151932 100%);
-            color: #e2e8f0; 
-            font-family: 'Cabinet Grotesk', 'Plus Jakarta Sans', -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
         .dashboard-header { 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
-            padding-bottom: 1.2rem; 
+            border-bottom: 1px solid #e2e8f0; 
+            padding-bottom: 1rem; 
             margin-bottom: 2rem; 
         }
-        h3.text-primary {
-            background: linear-gradient(45deg, #00f5ff, #9b51e0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
+        .dashboard-title {
+            font-weight: 700;
+            color: #0f172a;
             letter-spacing: -0.5px;
+            font-size: 1.5rem;
         }
 
-        /* Glassmorphism Premium Cards */
+        /* Clean & Sharp Premium Cards */
         .card { 
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 1.25rem; 
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            background: #ffffff;
+            border: 1px solid #e2e8f0; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
             margin-bottom: 1.5rem; 
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px 0 rgba(0, 245, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
         }
         .card-title { 
-            color: #94a3b8; 
+            color: #64748b; 
             font-size: 0.75rem; 
             text-transform: uppercase; 
-            font-weight: 700; 
-            letter-spacing: 1px;
+            font-weight: 600; 
+            letter-spacing: 0.5px;
         }
         
-        /* Glowing Neon Values */
-        .amount-value { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.5px; }
-        #val-pendapatan { color: #00ffcc; text-shadow: 0 0 10px rgba(0,255,204,0.2); }
-        #val-biaya { color: #ff5e7e; text-shadow: 0 0 10px rgba(255,94,126,0.2); }
-        #val-lr { color: #b57cff; text-shadow: 0 0 10px rgba(181,124,255,0.2); }
+        /* Typography Scale & Soft Colors */
+        .amount-value { font-size: 1.5rem; font-weight: 700; color: #0f172a; letter-spacing: -0.5px; }
+        .amount-sub { font-size: 0.8rem; color: #64748b; }
         
-        .amount-sub { font-size: 0.8rem; color: #cbd5e1; }
         .selisih-box { 
-            background: rgba(255, 255, 255, 0.06); 
+            background: #f1f5f9; 
             padding: 6px 10px; 
-            border-radius: 0.5rem; 
+            border-radius: 0.375rem; 
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-top: 10px; 
+            font-size: 0.8rem;
         }
 
-        /* Floating Filter Controls */
+        /* Minimalist Controls */
         .filter-box { 
-            background: rgba(255, 255, 255, 0.06); 
-            padding: 8px 16px; 
-            border-radius: 1rem; 
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff; 
+            padding: 6px 12px; 
+            border-radius: 0.5rem; 
+            border: 1px solid #e2e8f0;
         }
         .form-select-sm {
-            background-color: #1a1f3d;
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #fff;
-            border-radius: 0.5rem;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+            border-radius: 0.375rem;
             font-size: 0.85rem;
+            font-weight: 500;
         }
         .form-select-sm:focus {
-            background-color: #1a1f3d;
-            color: #fff;
-            border-color: #00f5ff;
-            box-shadow: 0 0 0 0.25rem rgba(0, 245, 255, 0.25);
+            border-color: #64748b;
+            box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.15);
         }
 
-        /* Clean Modern Tables (No Ugly Borders) */
-        .table-rincian { color: #e2e8f0; }
+        /* Slate/Muted Corporate Tables */
+        .table-rincian { color: #334155; }
         .table-hover tbody tr:hover {
-            background-color: rgba(255, 255, 255, 0.03) !important;
+            background-color: #f8fafc !important;
         }
         .table-rincian th { 
             font-size: 0.75rem; 
             text-transform: uppercase; 
-            color: #00f5ff; 
+            color: #475569; 
             letter-spacing: 0.5px;
-            padding: 12px;
+            padding: 10px 12px;
+            font-weight: 600;
         }
-        .table-rincian td { padding: 14px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .table-rincian td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
         .sticky-header th { 
             position: sticky; top: 0; 
-            background: #181d38; 
+            background: #f8fafc; 
             z-index: 1; 
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1); 
+            border-bottom: 1px solid #e2e8f0; 
         }
         
-        /* Interactive Pill Links */
+        /* Clean Text Trigger */
         .btn-kategori { 
-            color: #fff; 
+            color: #0f172a; 
             cursor: pointer; 
             border: none; 
             background: none; 
             padding: 0; 
             font-weight: 600; 
             text-align: left;
-            transition: color 0.2s ease;
         }
-        .btn-kategori:hover { color: #00f5ff; text-decoration: underline; }
+        .btn-kategori:hover { color: #64748b; text-decoration: underline; }
 
-        /* Custom Futuristic Badges */
-        .badge { font-weight: 700; padding: 5px 8px; border-radius: 6px; }
-        .bg-success { background-color: rgba(0, 255, 128, 0.15) !important; color: #00ff80 !important; border: 1px solid rgba(0, 255, 128, 0.3); }
-        .bg-danger { background-color: rgba(255, 71, 87, 0.15) !important; color: #ff4757 !important; border: 1px solid rgba(255, 71, 87, 0.3); }
+        /* Elegant Pastel Matt Badges */
+        .badge { font-weight: 600; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; }
+        .bg-success { background-color: #e2fbe8 !important; color: #1e7e34 !important; border: 1px solid #c3f6d2; }
+        .bg-danger { background-color: #ffebe9 !important; color: #ce3c3e !important; border: 1px solid #ffd3d0; }
+        .text-success-custom { color: #1e7e34; }
+        .text-danger-custom { color: #ce3c3e; }
         
-        /* Loader Overhaul */
-        #loader { background: #0f1123; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .spinner-border { color: #00f5ff !important; }
+        #loader { background: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .spinner-border { color: #64748b !important; }
+        .chart-container { position: relative; height: 260px; width: 100%; }
 
-        /* Charts Glow Wrapper */
-        .chart-container { position: relative; height: 280px; width: 100%; }
-
-        /* Premium Minimalist Modal pop-up */
+        /* Minimalist Modal Pop-up */
         .modal-content {
-            background: #131730;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 1.5rem;
-            color: #e2e8f0;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.75rem;
+            color: #0f172a;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
         .modal-header, .modal-footer {
-            border-color: rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.02);
+            border-color: #f1f5f9;
+            background: #f8fafc;
         }
+        .modal-section-title { font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
     <div id="loader">
-        <div class="spinner-border" role="status" style="width: 2.5rem; height: 2.5rem;">
-            <span class="visually-hidden">Loading Spaceship...</span>
+        <div class="spinner-border" role="status" style="width: 2rem; height: 2rem;">
+            <span class="visually-hidden">Loading...</span>
         </div>
     </div>
 
     <div class="container py-4" id="dashboard-content" style="display: none;">
         
         <div class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-3">
-            <h3 class="mb-0 text-primary">⚡ Clean Budget Space</h3>
+            <div class="dashboard-title">Dashboard Anggaran 2026</div>
             <div class="filter-box d-flex align-items-center gap-2">
-                <span class="fw-bold text-muted me-1" style="font-size:0.85rem;">Timeline:</span>
-                <select id="startMonth" class="form-select form-select-sm w-auto fw-bold" onchange="validateAndFilter()">
+                <span class="text-muted fw-medium" style="font-size:0.85rem;">Periode:</span>
+                <select id="startMonth" class="form-select form-select-sm w-auto" onchange="validateAndFilter()">
                     <option value="0" selected>Januari</option><option value="1">Februari</option><option value="2">Maret</option>
                     <option value="3">April</option><option value="4">Mei</option><option value="5">Juni</option>
                     <option value="6">Juli</option><option value="7">Agustus</option><option value="8">September</option>
                     <option value="9">Oktober</option><option value="10">November</option><option value="11">Desember</option>
                 </select>
-                <span class="text-muted text-lowercase" style="font-size:0.85rem;">to</span>
-                <select id="endMonth" class="form-select form-select-sm w-auto fw-bold" onchange="validateAndFilter()">
+                <span class="text-muted" style="font-size:0.85rem;">s/d</span>
+                <select id="endMonth" class="form-select form-select-sm w-auto" onchange="validateAndFilter()">
                     <option value="0">Januari</option><option value="1">Februari</option><option value="2">Maret</option>
                     <option value="3">April</option><option value="4">Mei</option><option value="5">Juni</option>
                     <option value="6" selected>Juli</option><option value="7">Agustus</option><option value="8">September</option>
@@ -177,48 +172,48 @@
             </div>
         </div>
 
-        <div class="alert alert-warning py-2 bg-dark text-warning border-warning" id="filter-warning" style="display:none; font-size:0.85rem; border-radius:10px;">
-            ⚠️ Garis akhir bergeser otomatis menyesuaikan awal rentang.
+        <div class="alert alert-light py-2 text-secondary border-secondary-subtle" id="filter-warning" style="display:none; font-size:0.85rem; border-radius:6px;">
+            Rentang bulan akhir telah disesuaikan otomatis agar valid.
         </div>
 
         <div class="row">
             <div class="col-md-4">
-                <div class="card p-4">
-                    <div class="card-title">Inflow / Pendapatan</div>
-                    <div class="amount-value my-2" id="val-pendapatan">Rp 0</div>
-                    <div class="amount-sub text-muted">Target Pagu: <span id="bud-pendapatan" class="text-white fw-bold">Rp 0</span></div>
+                <div class="card p-3">
+                    <div class="card-title">Pendapatan Realisasi</div>
+                    <div class="amount-value my-1" id="val-pendapatan">Rp 0</div>
+                    <div class="amount-sub">Target Rencana: <span id="bud-pendapatan" class="fw-semibold text-dark">Rp 0</span></div>
                     <div class="selisih-box">
-                        <span style="font-size:0.75rem; color:#94a3b8;">Selisih Target:</span>
+                        <span class="text-muted">Selisih Target:</span>
                         <div>
-                            <span id="selisih-pendapatan" class="fw-bold me-1">Rp 0</span> 
+                            <span id="selisih-pendapatan" class="fw-semibold me-1">Rp 0</span> 
                             <span id="pct-pendapatan" class="badge">0%</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card p-4">
-                    <div class="card-title">Outflow / Beban Biaya</div>
-                    <div class="amount-value my-2" id="val-biaya">Rp 0</div>
-                    <div class="amount-sub text-muted">Batas Maks: <span id="bud-biaya" class="text-white fw-bold">Rp 0</span></div>
+                <div class="card p-3">
+                    <div class="card-title">Biaya Realisasi</div>
+                    <div class="amount-value my-1" id="val-biaya">Rp 0</div>
+                    <div class="amount-sub">Kuota Anggaran: <span id="bud-biaya" class="fw-semibold text-dark">Rp 0</span></div>
                     <div class="selisih-box">
-                        <span style="font-size:0.75rem; color:#94a3b8;">Sisa Kuota:</span>
+                        <span class="text-muted">Sisa Anggaran:</span>
                         <div>
-                            <span id="selisih-biaya" class="fw-bold me-1">Rp 0</span>
+                            <span id="selisih-biaya" class="fw-semibold me-1">Rp 0</span>
                             <span id="pct-biaya" class="badge">0%</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card p-4">
-                    <div class="card-title">Net Profit / Laba Rugi</div>
-                    <div class="amount-value my-2" id="val-lr">Rp 0</div>
-                    <div class="amount-sub text-muted">Proyeksi Awal: <span id="bud-lr" class="text-white fw-bold">Rp 0</span></div>
+                <div class="card p-3">
+                    <div class="card-title">Laba / Rugi Bersih</div>
+                    <div class="amount-value my-1" id="val-lr">Rp 0</div>
+                    <div class="amount-sub">Proyeksi Anggaran: <span id="bud-lr" class="fw-semibold text-dark">Rp 0</span></div>
                     <div class="selisih-box">
-                        <span style="font-size:0.75rem; color:#94a3b8;">Efisiensi:</span>
+                        <span class="text-muted">Margin Efisiensi:</span>
                         <div>
-                            <span id="selisih-lr" class="fw-bold me-1">Rp 0</span>
+                            <span id="selisih-lr" class="fw-semibold me-1">Rp 0</span>
                             <span id="pct-lr" class="badge">0%</span>
                         </div>
                     </div>
@@ -228,24 +223,24 @@
 
         <div class="row">
             <div class="col-md-6">
-                <div class="card p-4">
-                    <h6 class="card-title mb-3">Arus Kas Bulanan (Realisasi)</h6>
+                <div class="card p-3">
+                    <h6 class="card-title mb-2">Arus Kas Bulanan</h6>
                     <div class="chart-container"><canvas id="chartBar"></canvas></div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card p-4">
-                    <h6 class="card-title mb-3">Grafik Akumulasi Profitabilitas</h6>
+                <div class="card p-3">
+                    <h6 class="card-title mb-2">Tren Profitabilitas (Net)</h6>
                     <div class="chart-container"><canvas id="chartLine"></canvas></div>
                 </div>
             </div>
         </div>
 
-        <div class="row mt-2">
+        <div class="row mt-1">
             <div class="col-md-6">
                 <div class="card p-0 overflow-hidden">
-                    <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.02);">
-                        <h6 class="m-0 text-white font-weight-bold" style="font-size:0.85rem; font-weight:700;">📂 RINCIAN POS PENDAPATAN</h6>
+                    <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: #fafafa;">
+                        <h6 class="m-0 text-dark font-weight-bold" style="font-size:0.8rem; font-weight:700; letter-spacing:0.5px;">RINCIAN POS PENDAPATAN</h6>
                     </div>
                     <div class="card-body p-0 table-responsive" style="max-height: 400px;">
                         <table class="table table-hover table-rincian mb-0" id="detail-pendapatan-table"></table>
@@ -254,8 +249,8 @@
             </div>
             <div class="col-md-6">
                 <div class="card p-0 overflow-hidden">
-                    <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.02);">
-                        <h6 class="m-0 text-white font-weight-bold" style="font-size:0.85rem; font-weight:700;">📂 RINCIAN POS EXPENSE / BIAYA</h6>
+                    <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: #fafafa;">
+                        <h6 class="m-0 text-dark font-weight-bold" style="font-size:0.8rem; font-weight:700; letter-spacing:0.5px;">RINCIAN POS EXPENSE / BIAYA</h6>
                     </div>
                     <div class="card-body p-0 table-responsive" style="max-height: 400px;">
                         <table class="table table-hover table-rincian mb-0" id="detail-biaya-table"></table>
@@ -269,28 +264,28 @@
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold text-info" id="trxModalTitle">Rincian Transaksi</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title fw-bold text-dark" id="trxModalTitle" style="font-size:1.1rem;">Rincian Transaksi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-0" style="background: #111426;">
-                    <div class="p-4 border-bottom border-secondary" style="background: rgba(255,255,255,0.01);">
-                        <div class="modal-section-title text-info">🏆 Kontribusi Terbanyak (Per Departemen)</div>
+                <div class="modal-body p-0" style="background: #ffffff;">
+                    <div class="p-3 border-bottom" style="background: #fafafa;">
+                        <div class="modal-section-title">Kontribusi Per Departemen (Dept)</div>
                         <div class="table-responsive">
-                            <table class="table table-bordered text-white table-sm mb-0" style="font-size: 0.85rem; max-width: 550px; border-color: rgba(255,255,255,0.1);">
-                                <thead style="background:rgba(255,255,255,0.05);">
+                            <table class="table table-sm table-bordered mb-0" style="font-size: 0.85rem; max-width: 500px; border-color:#e2e8f0;">
+                                <thead class="table-light">
                                     <tr>
                                         <th>Nama Departemen (Dept)</th>
-                                        <th class="text-end">Total Belanja</th>
-                                        <th class="text-center" style="width: 100px;">Rasio</th>
+                                        <th class="text-end">Total Nilai</th>
+                                        <th class="text-center" style="width: 80px;">Porsi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="trxModalDeptSummary"></tbody>
                             </table>
                         </div>
                     </div>
-                    <div class="p-4">
-                        <div class="modal-section-title text-info">📄 Rekam Jejak Jurnal Transaksi</div>
-                        <table class="table table-hover text-white mb-0" style="font-size: 0.85rem;">
+                    <div class="p-3">
+                        <div class="modal-section-title">Log Buku Jurnal Transaksi</div>
+                        <table class="table table-hover mb-0" style="font-size: 0.85rem;">
                             <thead class="sticky-header">
                                 <tr>
                                     <th class="ps-2">Bulan</th>
@@ -305,8 +300,8 @@
                     </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
-                    <span class="text-muted fw-bold">Akumulasi Realisasi Kategori:</span>
-                    <span class="fw-bold fs-5 text-info" id="trxModalTotal">Rp 0</span>
+                    <span class="text-muted fw-semibold">Total Realisasi Terpilih:</span>
+                    <span class="fw-bold fs-5 text-dark" id="trxModalTotal">Rp 0</span>
                 </div>
             </div>
         </div>
@@ -332,7 +327,7 @@
 
             fetch(API_URL)
                 .then(response => {
-                    if (!response.ok) throw new Error("Gagal terhubung dengan server Google Sheets.");
+                    if (!response.ok) throw new Error("Gagal mengambil data dari Google Sheet.");
                     return response.json();
                 })
                 .then(data => {
@@ -371,7 +366,7 @@
                 return total;
             };
             
-            const rangeRealPend = sumRange(globalData.realisasi.pendapatan, startIdx, endIdx);
+            const rangeRealPend = sumRange(globalData.real बारी.pendapatan || globalData.realisasi.pendapatan, startIdx, endIdx);
             const rangeBudPend = sumRange(globalData.budget.pendapatan, startIdx, endIdx);
             const rangeRealBiaya = sumRange(globalData.realisasi.biaya, startIdx, endIdx);
             const rangeBudBiaya = sumRange(globalData.budget.biaya, startIdx, endIdx);
@@ -393,21 +388,22 @@
             document.getElementById('bud-biaya').innerText = formatIDR(rangeBudBiaya);
             document.getElementById('val-lr').innerText = formatIDR(rangeRealLR);
             document.getElementById('bud-lr').innerText = formatIDR(rangeBudLR);
+            document.getElementById('val-lr').className = "amount-value my-1 " + (rangeRealLR < 0 ? 'text-danger-custom' : '');
 
             const formatSelisih = (val) => (val > 0 ? '+' : '') + formatIDR(val);
             
             document.getElementById('selisih-pendapatan').innerText = formatSelisih(selisihPend);
-            document.getElementById('selisih-pendapatan').className = selisihPend >= 0 ? 'fw-bold text-success' : 'fw-bold text-danger';
+            document.getElementById('selisih-pendapatan').className = selisihPend >= 0 ? 'fw-semibold text-success-custom' : 'fw-semibold text-danger-custom';
             document.getElementById('pct-pendapatan').innerText = pctPend + '%';
             document.getElementById('pct-pendapatan').className = `badge ms-1 ${selisihPend >= 0 ? 'bg-success' : 'bg-danger'}`;
 
             document.getElementById('selisih-biaya').innerText = formatSelisih(selisihBiaya);
-            document.getElementById('selisih-biaya').className = selisihBiaya >= 0 ? 'fw-bold text-success' : 'fw-bold text-danger';
+            document.getElementById('selisih-biaya').className = selisihBiaya >= 0 ? 'fw-semibold text-success-custom' : 'fw-semibold text-danger-custom';
             document.getElementById('pct-biaya').innerText = pctBiaya + '%';
             document.getElementById('pct-biaya').className = `badge ms-1 ${selisihBiaya >= 0 ? 'bg-success' : 'bg-danger'}`;
 
             document.getElementById('selisih-lr').innerText = formatSelisih(selisihLR);
-            document.getElementById('selisih-lr').className = selisihLR >= 0 ? 'fw-bold text-success' : 'fw-bold text-danger';
+            document.getElementById('selisih-lr').className = selisihLR >= 0 ? 'fw-semibold text-success-custom' : 'fw-semibold text-danger-custom';
             document.getElementById('pct-lr').innerText = pctLR + '%';
             document.getElementById('pct-lr').className = `badge ms-1 ${selisihLR >= 0 ? 'bg-success' : 'bg-danger'}`;
 
@@ -427,32 +423,31 @@
                     }
                     if (totalRealisasi > 0 || totalBudget > 0) {
                         let sisa = isPendapatan ? (totalRealisasi - totalBudget) : (totalBudget - totalRealisasi);
-                        let pct = totalBudget > 0 ? ((totalRealisasi / totalBudget) * 100).toFixed(1) : (totalRealisasi > 0 ? ">100" : 0);
+                        let pct = totalBudget > 0 ? ((totalRealisasi / totalBudget) * 100).toFixed(1) : (totalRealisasi > 0 ? "100" : 0);
                         sortedList.push({ name: category, realisasi: totalRealisasi, budget: totalBudget, sisa: sisa, pct: pct });
                     }
                 }
                 
                 sortedList.sort((a, b) => Math.max(b.realisasi, b.budget) - Math.max(a.realisasi, a.budget));
 
-                if (sortedList.length === 0) return `<tr><td colspan="5" class="text-center text-muted py-3">Kosong untuk periode ini</td></tr>`;
+                if (sortedList.length === 0) return `<tr><td colspan="5" class="text-center text-muted py-3" style="font-size:0.85rem;">Tidak ada rekaman data</td></tr>`;
 
-                let html = '<thead class="sticky-header"><tr><th class="ps-3">Kategori</th><th class="text-end">Budget</th><th class="text-end">Realisasi</th><th class="text-end">Sisa (+/-)</th><th class="text-center pe-3">%</th></tr></thead><tbody>';
+                let html = '<thead class="sticky-header"><tr><th class="ps-3">Kategori</th><th class="text-end">Budget</th><th class="text-end">Realisasi</th><th class="text-end">Sisa</th><th class="text-center pe-3">%</th></tr></thead><tbody>';
                 
                 sortedList.forEach(item => {
-                    let sisaColor = item.sisa > 0 ? 'text-success fw-bold' : (item.sisa < 0 ? 'text-danger fw-bold' : 'text-muted');
+                    let sisaColor = item.sisa > 0 ? 'text-success-custom fw-semibold' : (item.sisa < 0 ? 'text-danger-custom fw-semibold' : 'text-muted');
                     let sisaTeks = item.sisa > 0 ? '+' + formatIDR(item.sisa) : formatIDR(item.sisa);
                     let catEncoded = encodeURIComponent(item.name);
-                    
-                    let pctColor = isPendapatan ? ((item.pct >= 100 || item.pct === '>100') ? 'bg-success' : 'bg-danger') : ((item.pct <= 100) ? 'bg-success' : 'bg-danger');
+                    let pctColor = isPendapatan ? (item.pct >= 100 ? 'bg-success' : 'bg-danger') : (item.pct <= 100 ? 'bg-success' : 'bg-danger');
                     
                     html += `<tr>
-                                <td class="ps-3" style="max-width: 140px;">
+                                <td class="ps-3" style="max-width: 150px;">
                                     <button class="btn-kategori" onclick="showTransactionDetail('${catEncoded}', ${isPendapatan})">
-                                        🚀 ${item.name}
+                                        ${item.name}
                                     </button>
                                 </td>
-                                <td class="text-end opacity-75">${formatIDR(item.budget)}</td>
-                                <td class="text-end fw-bold text-white">${formatIDR(item.realisasi)}</td>
+                                <td class="text-end text-muted">${formatIDR(item.budget)}</td>
+                                <td class="text-end fw-semibold text-dark">${formatIDR(item.realisasi)}</td>
                                 <td class="text-end ${sisaColor}">${sisaTeks}</td>
                                 <td class="text-center pe-3"><span class="badge ${pctColor}">${item.pct}%</span></td>
                              </tr>`;
@@ -470,7 +465,7 @@
             let start = parseInt(document.getElementById('startMonth').value);
             let end = parseInt(document.getElementById('endMonth').value);
             
-            document.getElementById('trxModalTitle').innerText = "🔮 Analisis Item: " + categoryName;
+            document.getElementById('trxModalTitle').innerText = categoryName;
             
             let source = isPendapatan ? globalData.details.pendapatan : globalData.details.biaya;
             let trxList = source[categoryName].trx || [];
@@ -480,15 +475,15 @@
             trxList.forEach(trx => {
                 if(trx.bulan >= start && trx.bulan <= end) {
                     htmlBody += `<tr>
-                                    <td class="ps-2 fw-bold text-info">${allMonths[trx.bulan]}</td>
+                                    <td class="ps-2 fw-semibold text-secondary">${allMonths[trx.bulan]}</td>
                                     <td>${trx.keterangan !== '' ? trx.keterangan : '-'}</td>
-                                    <td><span class="badge bg-secondary opacity-75">${trx.po !== '' ? trx.po : '-'}</span></td>
-                                    <td class="text-muted">${trx.dept !== '' ? trx.dept : '-'}</td>
-                                    <td class="text-end pe-2 fw-bold text-white">${formatIDR(trx.nominal)}</td>
+                                    <td><span class="badge bg-light text-dark border">${trx.po !== '' ? trx.po : '-'}</span></td>
+                                    <td>${trx.dept !== '' ? trx.dept : '-'}</td>
+                                    <td class="text-end pe-2 fw-semibold text-dark">${formatIDR(trx.nominal)}</td>
                                  </tr>`;
                     
                     totalNilai += trx.nominal;
-                    let namaDept = trx.dept !== '' ? trx.dept : 'General / Lainnya';
+                    let namaDept = trx.dept !== '' ? trx.dept : 'Lainnya';
                     if (!deptSummary[namaDept]) deptSummary[namaDept] = 0;
                     deptSummary[namaDept] += trx.nominal;
                 }
@@ -500,16 +495,16 @@
                     let persentase = totalNilai > 0 ? ((item.total / totalNilai) * 100).toFixed(1) : 0;
                     let badgeWarna = isPendapatan ? 'bg-success' : 'bg-danger';
                     htmlDept += `<tr>
-                                    <td class="text-white">${item.nama}</td>
-                                    <td class="text-end text-info fw-bold">${formatIDR(item.total)}</td>
+                                    <td class="text-dark fw-medium">${item.nama}</td>
+                                    <td class="text-end fw-semibold text-dark">${formatIDR(item.total)}</td>
                                     <td class="text-center"><span class="badge ${badgeWarna}">${persentase}%</span></td>
                                  </tr>`;
                 });
             } else {
-                htmlDept = `<tr><td colspan="3" class="text-center text-muted">Belum ada departemen terekam</td></tr>`;
+                htmlDept = `<tr><td colspan="3" class="text-center text-muted">Data kosong</td></tr>`;
             }
 
-            if(htmlBody === "") htmlBody = `<tr><td colspan="5" class="text-center text-muted py-4">Sirkulasi transaksi kosong di rentang ini.</td></tr>`;
+            if(htmlBody === "") htmlBody = `<tr><td colspan="5" class="text-center text-muted py-4">Tidak ada pergerakan anggaran di rentang ini.</td></tr>`;
 
             document.getElementById('trxModalDeptSummary').innerHTML = htmlDept;
             document.getElementById('trxModalBody').innerHTML = htmlBody;
@@ -520,18 +515,18 @@
         }
 
         function initCharts() {
-            Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
-            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.font.family = "-apple-system, sans-serif";
+            Chart.defaults.color = '#64748b';
 
             barChart = new Chart(document.getElementById('chartBar').getContext('2d'), { 
                 type: 'bar', 
                 data: { labels: [], datasets: [] }, 
-                options: { maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff' } } } } 
+                options: { maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { border: { dash: [4, 4] } } } } 
             });
             lineChart = new Chart(document.getElementById('chartLine').getContext('2d'), { 
                 type: 'line', 
                 data: { labels: [], datasets: [] }, 
-                options: { maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff' } } } } 
+                options: { maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { border: { dash: [4, 4] } } } } 
             });
         }
 
@@ -543,14 +538,14 @@
 
             barChart.data.labels = filteredMonths;
             barChart.data.datasets = [
-                { label: 'Inflow (Realisasi)', data: filteredRealPend, backgroundColor: '#00ffcc', borderRadius: 6 },
-                { label: 'Outflow (Realisasi)', data: filteredRealBiaya, backgroundColor: '#ff5e7e', borderRadius: 6 }
+                { label: 'Pendapatan (Realisasi)', data: filteredRealPend, backgroundColor: '#bbf7d0', barPercentage: 0.6 },
+                { label: 'Biaya (Realisasi)', data: filteredRealBiaya, backgroundColor: '#fecdd3', barPercentage: 0.6 }
             ];
             barChart.update();
 
             lineChart.data.labels = filteredMonths;
             lineChart.data.datasets = [
-                { label: 'Net Profit Trend', data: filteredLrReal, borderColor: '#b57cff', backgroundColor: 'rgba(181, 124, 255, 0.1)', fill: true, tension: 0.4, borderWidth: 3 }
+                { label: 'Tren Bersih Laba/Rugi', data: filteredLrReal, borderColor: '#94a3b8', backgroundColor: 'rgba(203, 213, 225, 0.2)', fill: true, tension: 0.2, borderWidth: 2, pointBackgroundColor: '#475569' }
             ];
             lineChart.update();
         }
