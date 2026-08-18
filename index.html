@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Dashboard 2026</title>
-    <!-- Bootstrap JS & CSS untuk Modal Pop-up -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -38,7 +37,7 @@
     <div class="container py-4" id="dashboard-content" style="display: none;">
         
         <div class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-3">
-            <h3 class="mb-0 text-primary">Dashboard Budget 2026</h3>
+            <h3 class="mb-0 text-primary">Dashboard Finansial 2026</h3>
             <div class="filter-box d-flex align-items-center gap-2">
                 <span class="fw-bold text-secondary me-1">Filter Bulan:</span>
                 <select id="startMonth" class="form-select form-select-sm w-auto fw-bold" onchange="validateAndFilter()">
@@ -61,14 +60,16 @@
             Bulan akhir disesuaikan otomatis karena tidak boleh lebih kecil dari bulan awal.
         </div>
 
-        <!-- Kartu Ringkasan (Kini dilengkapi indikator Selisih) -->
         <div class="row">
             <div class="col-md-4">
                 <div class="card p-3 border-start border-success border-4">
                     <div class="card-title">Pendapatan Realisasi</div>
                     <div class="amount-value" id="val-pendapatan">Rp 0</div>
                     <div class="amount-sub text-muted">Total Budget: <span id="bud-pendapatan" class="fw-bold text-dark">Rp 0</span></div>
-                    <div class="amount-sub selisih-box">Selisih: <span id="selisih-pendapatan" class="fw-bold">Rp 0</span></div>
+                    <div class="amount-sub selisih-box">
+                        Selisih: <span id="selisih-pendapatan" class="fw-bold">Rp 0</span> 
+                        <span id="pct-pendapatan" class="badge ms-1" style="font-size: 0.8rem;">0%</span>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
@@ -76,7 +77,10 @@
                     <div class="card-title">Biaya Realisasi</div>
                     <div class="amount-value" id="val-biaya">Rp 0</div>
                     <div class="amount-sub text-muted">Total Budget: <span id="bud-biaya" class="fw-bold text-dark">Rp 0</span></div>
-                    <div class="amount-sub selisih-box">Selisih: <span id="selisih-biaya" class="fw-bold">Rp 0</span></div>
+                    <div class="amount-sub selisih-box">
+                        Selisih: <span id="selisih-biaya" class="fw-bold">Rp 0</span>
+                        <span id="pct-biaya" class="badge ms-1" style="font-size: 0.8rem;">0%</span>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
@@ -84,12 +88,14 @@
                     <div class="card-title">Laba / Rugi Bersih</div>
                     <div class="amount-value" id="val-lr">Rp 0</div>
                     <div class="amount-sub text-muted">Target Budget: <span id="bud-lr" class="fw-bold text-dark">Rp 0</span></div>
-                    <div class="amount-sub selisih-box">Selisih: <span id="selisih-lr" class="fw-bold">Rp 0</span></div>
+                    <div class="amount-sub selisih-box">
+                        Selisih: <span id="selisih-lr" class="fw-bold">Rp 0</span>
+                        <span id="pct-lr" class="badge ms-1" style="font-size: 0.8rem;">0%</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Grafik Visualisasi -->
         <div class="row">
             <div class="col-md-6">
                 <div class="card p-3">
@@ -105,12 +111,11 @@
             </div>
         </div>
 
-        <!-- Tabel Rincian Realisasi VS Budget -->
         <div class="row mt-2">
             <div class="col-md-6">
                 <div class="card p-0 overflow-hidden border-start border-success border-4">
                     <div class="card-header bg-white py-3">
-                        <h6 class="m-0 font-weight-bold text-success text-uppercase" style="font-size:0.85rem;">Rincian Pendapatan <small class="text-muted text-lowercase fw-normal">(Klik kategori untuk rincian Dept)</small></h6>
+                        <h6 class="m-0 font-weight-bold text-success text-uppercase" style="font-size:0.85rem;">Rincian Pendapatan <small class="text-muted text-lowercase fw-normal">(Klik kategori untuk rincian)</small></h6>
                     </div>
                     <div class="card-body p-0 table-responsive" style="max-height: 450px;">
                         <table class="table table-hover table-rincian mb-0" id="detail-pendapatan-table"></table>
@@ -120,7 +125,7 @@
             <div class="col-md-6">
                 <div class="card p-0 overflow-hidden border-start border-danger border-4">
                     <div class="card-header bg-white py-3">
-                        <h6 class="m-0 font-weight-bold text-danger text-uppercase" style="font-size:0.85rem;">Rincian Biaya <small class="text-muted text-lowercase fw-normal">(Klik kategori untuk rincian Dept)</small></h6>
+                        <h6 class="m-0 font-weight-bold text-danger text-uppercase" style="font-size:0.85rem;">Rincian Biaya <small class="text-muted text-lowercase fw-normal">(Klik kategori untuk rincian)</small></h6>
                     </div>
                     <div class="card-body p-0 table-responsive" style="max-height: 450px;">
                         <table class="table table-hover table-rincian mb-0" id="detail-biaya-table"></table>
@@ -130,7 +135,6 @@
         </div>
     </div>
 
-    <!-- MODAL POP-UP UNTUK DETAIL TRANSAKSI & DEPARTEMEN -->
     <div class="modal fade" id="trxModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -185,7 +189,6 @@
 
         // =======================================================================
         // PENTING: Masukkan URL Web App Google Apps Script Anda di sini!
-        // Pastikan URL yang dimasukkan adalah hasil Deploy terbaru (New Deployment) 
         // =======================================================================
         const API_URL = "https://script.google.com/macros/s/AKfycbzbqicqOwjiSu6peVIi7LGVLARl2q89eaQVZ0rXnnbxL3EdeeFR_f6baq4FWv9trjn7/exec"; 
 
@@ -197,7 +200,6 @@
             document.getElementById('startMonth').value = '0';
             document.getElementById('endMonth').value = '6';
 
-            // Menggunakan fetch API khusus untuk Vercel
             fetch(API_URL)
                 .then(response => {
                     if (!response.ok) throw new Error("Gagal mengambil data dari Google Script");
@@ -211,7 +213,7 @@
                     validateAndFilter(); 
                 })
                 .catch(err => {
-                    alert('Terjadi kesalahan koneksi: ' + err.message + '\n\nPastikan URL Web App sudah benar dan berstatus Anyone (Siapa saja).');
+                    alert('Terjadi kesalahan koneksi: ' + err.message);
                     document.getElementById('loader').style.display = 'none';
                 });
         };
@@ -247,33 +249,40 @@
             const rangeRealLR = rangeRealPend - rangeRealBiaya;
             const rangeBudLR = rangeBudPend - rangeBudBiaya;
 
-            // Hitung Selisih
             const selisihPend = rangeRealPend - rangeBudPend; 
-            const selisihBiaya = rangeBudBiaya - rangeRealBiaya; // Positif = Hemat (Real < Bud)
+            const selisihBiaya = rangeBudBiaya - rangeRealBiaya; 
             const selisihLR = rangeRealLR - rangeBudLR;
 
-            // Update DOM Nilai Utama
+            // --- PERUBAHAN: Menghitung Persentase Capaian ---
+            let pctPend = rangeBudPend > 0 ? ((rangeRealPend / rangeBudPend) * 100).toFixed(1) : (rangeRealPend > 0 ? 100 : 0);
+            let pctBiaya = rangeBudBiaya > 0 ? ((rangeRealBiaya / rangeBudBiaya) * 100).toFixed(1) : (rangeRealBiaya > 0 ? 100 : 0);
+            // Laba rugi capai target jika (Realisasi L/R / Budget L/R) > 100% dengan asumsi L/R positif
+            let pctLR = rangeBudLR !== 0 ? ((rangeRealLR / rangeBudLR) * 100).toFixed(1) : 0;
+
             document.getElementById('val-pendapatan').innerText = formatIDR(rangeRealPend);
             document.getElementById('bud-pendapatan').innerText = formatIDR(rangeBudPend);
-            
             document.getElementById('val-biaya').innerText = formatIDR(rangeRealBiaya);
             document.getElementById('bud-biaya').innerText = formatIDR(rangeBudBiaya);
-            
             document.getElementById('val-lr').innerText = formatIDR(rangeRealLR);
             document.getElementById('bud-lr').innerText = formatIDR(rangeBudLR);
             document.getElementById('val-lr').style.color = rangeRealLR < 0 ? '#e74a3b' : '#3a3b45';
 
-            // Update DOM Selisih Top Cards
             const formatSelisih = (val) => (val > 0 ? '+' : '') + formatIDR(val);
             
             document.getElementById('selisih-pendapatan').innerText = formatSelisih(selisihPend);
             document.getElementById('selisih-pendapatan').className = selisihPend >= 0 ? 'fw-bold text-success' : 'fw-bold text-danger';
+            document.getElementById('pct-pendapatan').innerText = pctPend + '%';
+            document.getElementById('pct-pendapatan').className = `badge ms-1 ${selisihPend >= 0 ? 'bg-success' : 'bg-danger'}`;
 
             document.getElementById('selisih-biaya').innerText = formatSelisih(selisihBiaya);
             document.getElementById('selisih-biaya').className = selisihBiaya >= 0 ? 'fw-bold text-success' : 'fw-bold text-danger';
+            document.getElementById('pct-biaya').innerText = pctBiaya + '%';
+            document.getElementById('pct-biaya').className = `badge ms-1 ${selisihBiaya >= 0 ? 'bg-success' : 'bg-danger'}`;
 
             document.getElementById('selisih-lr').innerText = formatSelisih(selisihLR);
             document.getElementById('selisih-lr').className = selisihLR >= 0 ? 'fw-bold text-success' : 'fw-bold text-danger';
+            document.getElementById('pct-lr').innerText = pctLR + '%';
+            document.getElementById('pct-lr').className = `badge ms-1 ${selisihLR >= 0 ? 'bg-success' : 'bg-danger'}`;
 
             updateCharts(startIdx, endIdx);
             renderDetailedTables(startIdx, endIdx);
@@ -291,21 +300,33 @@
                     }
                     if (totalRealisasi > 0 || totalBudget > 0) {
                         let sisa = isPendapatan ? (totalRealisasi - totalBudget) : (totalBudget - totalRealisasi);
-                        sortedList.push({ name: category, realisasi: totalRealisasi, budget: totalBudget, sisa: sisa });
+                        // --- PERUBAHAN: Tambah Properti Persentase di Objek ---
+                        let pct = totalBudget > 0 ? ((totalRealisasi / totalBudget) * 100).toFixed(1) : (totalRealisasi > 0 ? ">100" : 0);
+                        sortedList.push({ name: category, realisasi: totalRealisasi, budget: totalBudget, sisa: sisa, pct: pct });
                     }
                 }
                 
                 sortedList.sort((a, b) => Math.max(b.realisasi, b.budget) - Math.max(a.realisasi, a.budget));
 
-                if (sortedList.length === 0) return `<tr><td colspan="4" class="text-center text-muted py-3">Tidak ada data di rentang ini</td></tr>`;
+                if (sortedList.length === 0) return `<tr><td colspan="5" class="text-center text-muted py-3">Tidak ada data di rentang ini</td></tr>`;
 
-                let html = '<thead class="sticky-header"><tr><th class="ps-3">Kategori Budget</th><th class="text-end">Budget</th><th class="text-end">Realisasi</th><th class="text-end pe-3">+/- (Sisa)</th></tr></thead><tbody>';
+                // --- PERUBAHAN: Tambah Kolom % Capaian di Header ---
+                let html = '<thead class="sticky-header"><tr><th class="ps-3">Kategori Budget</th><th class="text-end">Budget</th><th class="text-end">Realisasi</th><th class="text-end">+/- (Sisa)</th><th class="text-center pe-3">% Capaian</th></tr></thead><tbody>';
                 
                 sortedList.forEach(item => {
                     let sisaColor = item.sisa > 0 ? 'text-success fw-bold' : (item.sisa < 0 ? 'text-danger fw-bold' : 'text-muted');
                     let sisaTeks = item.sisa > 0 ? '+' + formatIDR(item.sisa) : formatIDR(item.sisa);
                     let catEncoded = encodeURIComponent(item.name);
                     
+                    // --- PERUBAHAN: Logika Warna Badge Persentase ---
+                    let pctColor = '';
+                    if (isPendapatan) {
+                        pctColor = (item.pct >= 100 || item.pct === '>100') ? 'bg-success' : 'bg-danger';
+                    } else {
+                        pctColor = (item.pct <= 100) ? 'bg-success' : 'bg-danger'; // Di bawah 100% itu bagus untuk biaya
+                    }
+                    
+                    // --- PERUBAHAN: Cetak Kolom Persentase (Paling Kanan) ---
                     html += `<tr>
                                 <td class="ps-3" style="max-width: 150px;">
                                     <button class="btn-kategori" onclick="showTransactionDetail('${catEncoded}', ${isPendapatan})">
@@ -314,7 +335,8 @@
                                 </td>
                                 <td class="text-end text-muted">${formatIDR(item.budget)}</td>
                                 <td class="text-end text-dark fw-bold">${formatIDR(item.realisasi)}</td>
-                                <td class="text-end pe-3 ${sisaColor}">${sisaTeks}</td>
+                                <td class="text-end ${sisaColor}">${sisaTeks}</td>
+                                <td class="text-center pe-3"><span class="badge ${pctColor}">${item.pct}%</span></td>
                              </tr>`;
                 });
                 html += '</tbody>';
