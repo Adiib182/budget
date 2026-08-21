@@ -591,9 +591,16 @@
 
         function updateCharts(start, end) {
             const filteredMonths = allMonths.slice(start, end + 1);
+            
+            // Tarik data Realisasi
             const filteredRealPend = globalData.realisasi.pendapatan.slice(start, end + 1);
             const filteredRealBiaya = globalData.realisasi.biaya.slice(start, end + 1);
             const filteredLrReal = filteredRealPend.map((v, i) => v - filteredRealBiaya[i]);
+
+            // Tarik kembali data Budget (yang sebelumnya tidak sengaja terhapus)
+            const filteredBudPend = globalData.budget.pendapatan.slice(start, end + 1);
+            const filteredBudBiaya = globalData.budget.biaya.slice(start, end + 1);
+            const filteredLrBud = filteredBudPend.map((v, i) => v - filteredBudBiaya[i]);
 
             barChart.data.labels = filteredMonths;
             barChart.data.datasets = [
@@ -604,7 +611,26 @@
 
             lineChart.data.labels = filteredMonths;
             lineChart.data.datasets = [
-                { label: 'Tren Bersih Laba/Rugi', data: filteredLrReal, borderColor: '#94a3b8', backgroundColor: 'rgba(203, 213, 225, 0.2)', fill: true, tension: 0.2, borderWidth: 2, pointBackgroundColor: '#475569' }
+                { 
+                    label: 'Laba/Rugi (Realisasi)', 
+                    data: filteredLrReal, 
+                    borderColor: '#64748b', 
+                    backgroundColor: 'rgba(100, 116, 139, 0.1)', 
+                    fill: true, 
+                    tension: 0.3, 
+                    borderWidth: 2, 
+                    pointBackgroundColor: '#475569' 
+                },
+                { 
+                    label: 'Laba/Rugi (Target Budget)', 
+                    data: filteredLrBud, 
+                    borderColor: '#cbd5e1', 
+                    borderDash: [5, 5], // Efek garis putus-putus khas target
+                    fill: false, 
+                    tension: 0.3, 
+                    borderWidth: 2,
+                    pointBackgroundColor: '#94a3b8'
+                }
             ];
             lineChart.update();
         }
