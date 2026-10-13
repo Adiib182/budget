@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Space</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { 
+            background-color: #f8fafc;
+            color: #0f172a; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .dashboard-header { border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 2rem; }
+        .dashboard-title { font-weight: 700; color: #0f172a; letter-spacing: -0.5px; font-size: 1.5rem; }
+
+        .card { 
+            background: #ffffff;
+            border: 1px solid #e2e8f0; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem; 
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover { border-color: #cbd5e1; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .card-title { color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        
+        .amount-value { font-size: 1.5rem; font-weight: 700; color: #0f172a; letter-spacing: -0.5px; }
+        .amount-sub { font-size: 0.75rem; color: #64748b; font-weight: 500; }
+        
+        .summary-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 10px 12px; margin-top: 10px; }
+        .summary-title { font-size: 0.7rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+
+        .filter-box { background: #ffffff; padding: 6px 12px; border-radius: 0.5rem; border: 1px solid #e2e8f0; }
+        .form-select-sm { border: 1px solid #cbd5e1; color: #0f172a; border-radius: 0.375rem; font-size: 0.85rem; font-weight: 500; }
+        .form-select-sm:focus { border-color: #64748b; box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.15); }
+
+        .table-rincian { color: #334155; }
+        .table-hover tbody tr:hover { background-color: #f8fafc !important; }
+        .table-rincian th { font-size: 0.75rem; text-transform: uppercase; color: #475569; letter-spacing: 0.5px; padding: 10px 12px; font-weight: 600; }
+        .table-rincian td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
+        .sticky-header th { position: sticky; top: 0; background: #f8fafc; z-index: 1; border-bottom: 1px solid #e2e8f0; }
+        
+        .btn-kategori { color: #0f172a; cursor: pointer; border: none; background: none; padding: 0; font-weight: 600; text-align: left; }
+        .btn-kategori:hover { color: #64748b; text-decoration: underline; }
+
+        .badge { font-weight: 600; padding: 4px 6px; border-radius: 4px; font-size: 0.7rem; }
+        .bg-success { background-color: #e2fbe8 !important; color: #1e7e34 !important; border: 1px solid #c3f6d2; }
+        .bg-danger { background-color: #ffebe9 !important; color: #ce3c3e !important; border: 1px solid #ffd3d0; }
+        
+        /* Custom Colors untuk mengembalikan identitas visual */
+        .text-success-custom { color: #1e7e34 !important; }
+        .text-danger-custom { color: #ce3c3e !important; }
+        .border-top-success { border-top: 4px solid #1e7e34 !important; }
+        .border-top-danger { border-top: 4px solid #ce3c3e !important; }
+        
+        #loader { background: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .spinner-border { color: #64748b !important; }
+        .chart-container { position: relative; height: 260px; width: 100%; }
+
+        .modal-content { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 0.75rem; color: #0f172a; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .modal-header, .modal-footer { border-color: #f1f5f9; background: #f8fafc; }
+        .modal-section-title { font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <div class="spinner-border" role="status" style="width: 2rem; height: 2rem;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div class="container py-4" id="dashboard-content" style="display: none;">
+        
+        <div class="dashboard-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div class="dashboard-title">Budget Allocation & Realization Report 2027</div>
+            <div class="filter-box d-flex align-items-center gap-2">
+                <span class="text-muted fw-medium" style="font-size:0.85rem;">Periode:</span>
+                <select id="startMonth" class="form-select form-select-sm w-auto" onchange="validateAndFilter()">
+                    <option value="0" selected>Januari</option><option value="1">Februari</option><option value="2">Maret</option>
+                    <option value="3">April</option><option value="4">Mei</option><option value="5">Juni</option>
+                    <option value="6">Juli</option><option value="7">Agustus</option><option value="8">September</option>
+                    <option value="9">Oktober</option><option value="10">November</option><option value="11">Desember</option>
+                </select>
+                <span class="text-muted" style="font-size:0.85rem;">s/d</span>
+                <select id="endMonth" class="form-select form-select-sm w-auto" onchange="validateAndFilter()">
+                    <option value="0">Januari</option><option value="1">Februari</option><option value="2">Maret</option>
+                    <option value="3">April</option><option value="4">Mei</option><option value="5">Juni</option>
+                    <option value="6" selected>Juli</option><option value="7">Agustus</option><option value="8">September</option>
+                    <option value="9">Oktober</option><option value="10">November</option><option value="11">Desember</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="alert alert-light py-2 text-secondary border-secondary-subtle" id="filter-warning" style="display:none; font-size:0.85rem; border-radius:6px;">
+            Rentang bulan akhir telah disesuaikan otomatis agar valid.
+        </div>
+
+        <!-- 3 KARTU UTAMA -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <div class="card-title">Pendapatan Realisasi</div>
+                    <div class="amount-value my-1" id="val-pendapatan">Rp 0</div>
+                    <div class="summary-box">
+                        <div class="summary-title">📈 Target Rentang Filter</div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="amount-sub">Budget:</span>
+                            <span id="bud-pendapatan" class="fw-semibold text-dark" style="font-size: 0.8rem;">Rp 0</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="amount-sub">Selisih (+/-):</span>
+                            <div>
+                                <span id="selisih-pendapatan" class="fw-semibold me-1" style="font-size: 0.8rem;">Rp 0</span> 
+                                <span id="pct-pendapatan" class="badge">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-title">🗓️ Target 1 Tahun Full</div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="amount-sub">Total Budget:</span>
+                            <span id="bud-pendapatan-thn" class="fw-semibold text-dark" style="font-size: 0.8rem;">Rp 0</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="amount-sub">Sisa Target:</span>
+                            <div>
+                                <span id="selisih-pendapatan-thn" class="fw-semibold me-1" style="font-size: 0.8rem;">Rp 0</span> 
+                                <span id="pct-pendapatan-thn" class="badge">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <div class="card-title">Biaya Realisasi</div>
+                    <div class="amount-value my-1" id="val-biaya">Rp 0</div>
+                    <div class="summary-box">
+                        <div class="summary-title">📉 Anggaran Rentang Filter</div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="amount-sub">Budget:</span>
+                            <span id="bud-biaya" class="fw-semibold text-dark" style="font-size: 0.8rem;">Rp 0</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="amount-sub">Selisih (+/-):</span>
+                            <div>
+                                <span id="selisih-biaya" class="fw-semibold me-1" style="font-size: 0.8rem;">Rp 0</span>
+                                <span id="pct-biaya" class="badge">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-title">🗓️ Anggaran 1 Tahun Full</div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="amount-sub">Total Budget:</span>
+                            <span id="bud-biaya-thn" class="fw-semibold text-dark" style="font-size: 0.8rem;">Rp 0</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="amount-sub">Sisa Anggaran:</span>
+                            <div>
+                                <span id="selisih-biaya-thn" class="fw-semibold me-1" style="font-size: 0.8rem;">Rp 0</span>
+                                <span id="pct-biaya-thn" class="badge">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <div class="card-title">Laba / Rugi Bersih</div>
+                    <div class="amount-value my-1" id="val-lr">Rp 0</div>
+                    <div class="summary-box">
+                        <div class="summary-title">📊 Proyeksi Rentang Filter</div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="amount-sub">Budget:</span>
+                            <span id="bud-lr" class="fw-semibold text-dark" style="font-size: 0.8rem;">Rp 0</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="amount-sub">Selisih (+/-):</span>
+                            <div>
+                                <span id="selisih-lr" class="fw-semibold me-1" style="font-size: 0.8rem;">Rp 0</span>
+                                <span id="pct-lr" class="badge">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-title">🗓️ Proyeksi 1 Tahun Full</div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="amount-sub">Total Laba:</span>
+                            <span id="bud-lr-thn" class="fw-semibold text-dark" style="font-size: 0.8rem;">Rp 0</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="amount-sub">Selisih Capaian:</span>
+                            <div>
+                                <span id="selisih-lr-thn" class="fw-semibold me-1" style="font-size: 0.8rem;">Rp 0</span>
+                                <span id="pct-lr-thn" class="badge">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRAFIK -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h6 class="card-title mb-2">Arus Kas Bulanan</h6>
+                    <div class="chart-container"><canvas id="chartBar"></canvas></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h6 class="card-title mb-2">Tren Profitabilitas (Net)</h6>
+                    <div class="chart-container"><canvas id="chartLine"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABEL RINCIAN DENGAN WARNA KEMBALI -->
+        <div class="row mt-1">
+            <div class="col-md-6">
+                <!-- Tambahan class border-top-success di sini -->
+                <div class="card p-0 overflow-hidden border-top-success">
+                    <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: #fafafa;">
+                        <!-- Tambahan class text-success-custom di sini -->
+                        <h6 class="m-0 font-weight-bold text-success-custom" style="font-size:0.8rem; font-weight:700; letter-spacing:0.5px;">🟩 INCOME / PENDAPATAN (Klik kategori untuk rincian)</h6>
+                    </div>
+                    <div class="card-body p-0 table-responsive" style="max-height: 400px;">
+                        <table class="table table-hover table-rincian mb-0" id="detail-pendapatan-table"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <!-- Tambahan class border-top-danger di sini -->
+                <div class="card p-0 overflow-hidden border-top-danger">
+                    <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: #fafafa;">
+                         <!-- Tambahan class text-danger-custom di sini -->
+                        <h6 class="m-0 font-weight-bold text-danger-custom" style="font-size:0.8rem; font-weight:700; letter-spacing:0.5px;">🟥 EXPENSE / BIAYA (Klik kategori untuk rincian)</h6>
+                    </div>
+                    <div class="card-body p-0 table-responsive" style="max-height: 400px;">
+                        <table class="table table-hover table-rincian mb-0" id="detail-biaya-table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POP UP -->
+    <div class="modal fade" id="trxModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-dark" id="trxModalTitle" style="font-size:1.1rem;">Rincian Transaksi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0" style="background: #ffffff;">
+                    <div class="p-3 border-bottom" style="background: #fafafa;">
+                        <div class="modal-section-title">Kontribusi Per Departemen (Dept)</div>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered mb-0" style="font-size: 0.85rem; max-width: 500px; border-color:#e2e8f0;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nama Departemen (Dept)</th>
+                                        <th class="text-end">Total Nilai</th>
+                                        <th class="text-center" style="width: 80px;">Porsi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trxModalDeptSummary"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <div class="modal-section-title">Log Buku Jurnal Transaksi</div>
+                        <table class="table table-hover mb-0" style="font-size: 0.85rem;">
+                            <thead class="sticky-header">
+                                <tr>
+                                    <th class="ps-2">Bulan</th>
+                                    <th>Keterangan Jurnal</th>
+                                    <th>No. PO / Ref</th>
+                                    <th>Dept</th>
+                                    <th class="text-end pe-2">Nominal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trxModalBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <span class="text-muted fw-semibold">Total Realisasi Terpilih:</span>
+                    <!-- ID ini akan diubah warnanya via Javascript -->
+                    <span class="fw-bold fs-5 text-dark" id="trxModalTotal">Rp 0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let globalData = {};
+        let barChart, lineChart;
+        const allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+        // =======================================================================
+        // PASTIKAN GANTI INI DENGAN URL WEB APP ANDA
+        // =======================================================================
+        const API_URL = "https://script.google.com/macros/s/AKfycbwLjm1ZbIlRl-INxNzS9f9Inzu4fl-ahXn83zryIxqiimu9IUMU7flfSORVbKJhii4X/exec"; 
+
+        function formatIDR(value) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
+        }
+
+        window.onload = function() {
+            document.getElementById('startMonth').value = '0';
+            document.getElementById('endMonth').value = '6';
+
+            fetch(API_URL)
+                .then(response => {
+                    if (!response.ok) throw new Error("Gagal mengambil data.");
+                    return response.json();
+                })
+                .then(data => {
+                    globalData = data;
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('dashboard-content').style.display = 'block';
+                    initCharts();
+                    validateAndFilter(); 
+                })
+                .catch(err => {
+                    alert('Error Koneksi API: ' + err.message);
+                    document.getElementById('loader').style.display = 'none';
+                });
+        };
+
+        function validateAndFilter() {
+            let start = parseInt(document.getElementById('startMonth').value);
+            let end = parseInt(document.getElementById('endMonth').value);
+            let warning = document.getElementById('filter-warning');
+
+            if (end < start) {
+                end = start;
+                document.getElementById('endMonth').value = end;
+                warning.style.display = 'block';
+                setTimeout(() => warning.style.display = 'none', 3000);
+            } else {
+                warning.style.display = 'none';
+            }
+            updateDashboard(start, end);
+        }
+
+        function updateDashboard(startIdx, endIdx) {
+            const sumRange = (arr, start, end) => {
+                let total = 0;
+                for(let i = start; i <= end; i++) total += arr[i];
+                return total;
+            };
+            
+            const rangeRealPend = sumRange(globalData.realisasi.pendapatan, startIdx, endIdx);
+            const rangeBudPend = sumRange(globalData.budget.pendapatan, startIdx, endIdx);
+            const rangeRealBiaya = sumRange(globalData.realisasi.biaya, startIdx, endIdx);
+            const rangeBudBiaya = sumRange(globalData.budget.biaya, startIdx, endIdx);
+            
+            const rangeRealLR = rangeRealPend - rangeRealBiaya;
+            const rangeBudLR = rangeBudPend - rangeBudBiaya;
+
+            const fullBudPend = sumRange(globalData.budget.pendapatan, 0, 11);
+            const fullBudBiaya = sumRange(globalData.budget.biaya, 0, 11);
+            const fullBudLR = fullBudPend - fullBudBiaya;
+
+            const selisihPend = rangeRealPend - rangeBudPend; 
+            const selisihBiaya = rangeBudBiaya - rangeRealBiaya; 
+            const selisihLR = rangeRealLR - rangeBudLR;
+
+            const selisihPendThn = rangeRealPend - fullBudPend; 
+            const selisihBiayaThn = fullBudBiaya - rangeRealBiaya; 
+            const selisihLRThn = rangeRealLR - fullBudLR;
+
+            let pctPend = rangeBudPend > 0 ? ((rangeRealPend / rangeBudPend) * 100).toFixed(1) : (rangeRealPend > 0 ? 100 : 0);
+            let pctBiaya = rangeBudBiaya > 0 ? ((rangeRealBiaya / rangeBudBiaya) * 100).toFixed(1) : (rangeRealBiaya > 0 ? 100 : 0);
+            let pctLR = rangeBudLR !== 0 ? ((rangeRealLR / rangeBudLR) * 100).toFixed(1) : 0;
+
+            let pctPendThn = fullBudPend > 0 ? ((rangeRealPend / fullBudPend) * 100).toFixed(1) : (rangeRealPend > 0 ? 100 : 0);
+            let pctBiayaThn = fullBudBiaya > 0 ? ((rangeRealBiaya / fullBudBiaya) * 100).toFixed(1) : (rangeRealBiaya > 0 ? 100 : 0);
+            let pctLRThn = fullBudLR !== 0 ? ((rangeRealLR / fullBudLR) * 100).toFixed(1) : 0;
+
+            const formatSelisih = (val) => (val > 0 ? '+' : '') + formatIDR(val);
+            
+            document.getElementById('val-pendapatan').innerText = formatIDR(rangeRealPend);
+            document.getElementById('bud-pendapatan').innerText = formatIDR(rangeBudPend);
+            document.getElementById('selisih-pendapatan').innerText = formatSelisih(selisihPend);
+            document.getElementById('selisih-pendapatan').className = selisihPend >= 0 ? 'fw-semibold text-success-custom' : 'fw-semibold text-danger-custom';
+            document.getElementById('pct-pendapatan').innerText = pctPend + '%';
+            document.getElementById('pct-pendapatan').className = `badge ms-1 ${selisihPend >= 0 ? 'bg-success' : 'bg-danger'}`;
+
+            document.getElementById('bud-pendapatan-thn').innerText = formatIDR(fullBudPend);
+            document.getElementById('selisih-pendapatan-thn').innerText = formatSelisih(selisihPendThn);
+            document.getElementById('selisih-pendapatan-thn').className = selisihPendThn >= 0 ? 'fw-semibold text-success-custom' : 'fw-semibold text-danger-custom';
+            document.getElementById('pct-pendapatan-thn').innerText = pctPendThn + '%';
+            document.getElementById('pct-pendapatan-thn').className = `badge ms-1 ${selisihPendThn >= 0 ? 'bg-success' : 'bg-danger'}`;
+
+            document.getElementById('val-biaya').innerText = formatIDR(rangeRealBiaya);
+            document.getElementById('bud-biaya').innerText = formatIDR(rangeBudBiaya);
+            document.getElementById('selisih-biaya').innerText = formatSelisih(selisihBiaya);
+            document.getElementById('selisih-biaya').className = selisihBiaya >= 0 ? 'fw-semibold text-success-custom' : 'fw-semibold text-danger-custom';
+            document.getElementById('pct-biaya').innerText = pctBiaya + '%';
+            document.getElementById('pct-biaya').className = `badge ms-1 ${selisihBiaya >= 0 ? 'bg-success' : 'bg-danger'}`;
+
+            document.getElementById('bud-biaya-thn').innerText = formatIDR(fullBudBiaya);
+            document.getElementById('selisih-biaya-thn').innerText = formatSelisih(selisihBiayaThn); 
+            document.getElementById('selisih-biaya-thn').className = selisihBiayaThn >= 0 ? 'fw-semibold text-success-custom' : 'fw-semibold text-danger-custom';
+            document.getElementById('pct-biaya-thn').innerText = pctBiayaThn + '%';
+            document.getElementById('pct-biaya-thn').className = `badge ms-1 ${selisihBiayaThn >= 0 ? 'bg-success' : 'bg-danger'}`;
+
+            document.getElementById('val-lr').innerText = formatIDR(rangeRealLR);
+            document.getElementById('val-lr').className = "amount-value my-1 " + (rangeRealLR < 0 ? 'text-danger-custom' : '');
+
+            document.getElementById('bud-lr').innerText = formatIDR(rangeBudLR);
+            document.getElementById('selisih-lr').innerText = formatSelisih(selisihLR);
+            document.getElementById('selisih-lr').className = selisihLR >= 0 ? 'fw-semibold text-success-custom' : 'fw-semibold text-danger-custom';
+            document.getElementById('pct-lr').innerText = pctLR + '%';
+            document.getElementById('pct-lr').className = `badge ms-1 ${selisihLR >= 0 ? 'bg-success' : 'bg-danger'}`;
+
+            document.getElementById('bud-lr-thn').innerText = formatIDR(fullBudLR);
+            document.getElementById('selisih-lr-thn').innerText = formatSelisih(selisihLRThn);
+            document.getElementById('selisih-lr-thn').className = selisihLRThn >= 0 ? 'fw-semibold text-success-custom' : 'fw-semibold text-danger-custom';
+            document.getElementById('pct-lr-thn').innerText = pctLRThn + '%';
+            document.getElementById('pct-lr-thn').className = `badge ms-1 ${selisihLRThn >= 0 ? 'bg-success' : 'bg-danger'}`;
+
+            updateCharts(startIdx, endIdx);
+            renderDetailedTables(startIdx, endIdx);
+        }
+
+        function renderDetailedTables(start, end) {
+            function buildTableHtml(detailsData, isPendapatan) {
+                let sortedList = [];
+                for (let category in detailsData) {
+                    let totalRealisasi = 0;
+                    let totalBudget = 0;
+                    for (let i = start; i <= end; i++) {
+                        totalRealisasi += detailsData[category].realisasi[i];
+                        totalBudget += detailsData[category].budget[i];
+                    }
+                    if (totalRealisasi > 0 || totalBudget > 0) {
+                        let sisa = isPendapatan ? (totalRealisasi - totalBudget) : (totalBudget - totalRealisasi);
+                        let pct = totalBudget > 0 ? ((totalRealisasi / totalBudget) * 100).toFixed(1) : (totalRealisasi > 0 ? "100" : 0);
+                        sortedList.push({ name: category, realisasi: totalRealisasi, budget: totalBudget, sisa: sisa, pct: pct });
+                    }
+                }
+                
+                sortedList.sort((a, b) => Math.max(b.realisasi, b.budget) - Math.max(a.realisasi, a.budget));
+
+                if (sortedList.length === 0) return `<tr><td colspan="5" class="text-center text-muted py-3" style="font-size:0.85rem;">Tidak ada rekaman data</td></tr>`;
+
+                let html = '<thead class="sticky-header"><tr><th class="ps-3">Kategori</th><th class="text-end">Budget</th><th class="text-end">Realisasi</th><th class="text-end">Sisa</th><th class="text-center pe-3">%</th></tr></thead><tbody>';
+                
+                sortedList.forEach(item => {
+                    let sisaColor = item.sisa > 0 ? 'text-success-custom fw-semibold' : (item.sisa < 0 ? 'text-danger-custom fw-semibold' : 'text-muted');
+                    let sisaTeks = item.sisa > 0 ? '+' + formatIDR(item.sisa) : formatIDR(item.sisa);
+                    let catEncoded = encodeURIComponent(item.name);
+                    let pctColor = isPendapatan ? (item.pct >= 100 ? 'bg-success' : 'bg-danger') : (item.pct <= 100 ? 'bg-success' : 'bg-danger');
+                    
+                    // Tambahan Logika Warna untuk Angka Realisasi
+                    let realColor = isPendapatan ? 'text-success-custom' : 'text-danger-custom';
+
+                    html += `<tr>
+                                <td class="ps-3" style="max-width: 150px;">
+                                    <button class="btn-kategori" onclick="showTransactionDetail('${catEncoded}', ${isPendapatan})">
+                                        ${item.name}
+                                    </button>
+                                </td>
+                                <td class="text-end text-muted">${formatIDR(item.budget)}</td>
+                                <!-- Kolom Realisasi akan berwarna Hijau untuk Pendapatan, Merah untuk Biaya -->
+                                <td class="text-end fw-bold ${realColor}">${formatIDR(item.realisasi)}</td>
+                                <td class="text-end ${sisaColor}">${sisaTeks}</td>
+                                <td class="text-center pe-3"><span class="badge ${pctColor}">${item.pct}%</span></td>
+                             </tr>`;
+                });
+                html += '</tbody>';
+                return html;
+            }
+
+            document.getElementById('detail-pendapatan-table').innerHTML = buildTableHtml(globalData.details.pendapatan, true);
+            document.getElementById('detail-biaya-table').innerHTML = buildTableHtml(globalData.details.biaya, false);
+        }
+
+        function showTransactionDetail(encodedCategory, isPendapatan) {
+            let categoryName = decodeURIComponent(encodedCategory);
+            let start = parseInt(document.getElementById('startMonth').value);
+            let end = parseInt(document.getElementById('endMonth').value);
+            
+            document.getElementById('trxModalTitle').innerText = categoryName;
+            
+            let source = isPendapatan ? globalData.details.pendapatan : globalData.details.biaya;
+            let trxList = source[categoryName].trx || [];
+            
+            let htmlBody = ""; let htmlDept = ""; let totalNilai = 0; let deptSummary = {}; 
+
+            trxList.forEach(trx => {
+                if(trx.bulan >= start && trx.bulan <= end) {
+                    htmlBody += `<tr>
+                                    <td class="ps-2 fw-semibold text-secondary">${allMonths[trx.bulan]}</td>
+                                    <td>${trx.keterangan !== '' ? trx.keterangan : '-'}</td>
+                                    <td><span class="badge bg-light text-dark border">${trx.po !== '' ? trx.po : '-'}</span></td>
+                                    <td>${trx.dept !== '' ? trx.dept : '-'}</td>
+                                    <td class="text-end pe-2 fw-semibold text-dark">${formatIDR(trx.nominal)}</td>
+                                 </tr>`;
+                    
+                    totalNilai += trx.nominal;
+                    let namaDept = trx.dept !== '' ? trx.dept : 'Lainnya';
+                    if (!deptSummary[namaDept]) deptSummary[namaDept] = 0;
+                    deptSummary[namaDept] += trx.nominal;
+                }
+            });
+
+            let sortedDept = Object.keys(deptSummary).map(k => ({ nama: k, total: deptSummary[k] })).sort((a,b) => b.total - a.total);
+            if (sortedDept.length > 0) {
+                sortedDept.forEach(item => {
+                    let persentase = totalNilai > 0 ? ((item.total / totalNilai) * 100).toFixed(1) : 0;
+                    let badgeWarna = isPendapatan ? 'bg-success' : 'bg-danger';
+                    htmlDept += `<tr>
+                                    <td class="text-dark fw-medium">${item.nama}</td>
+                                    <td class="text-end fw-semibold text-dark">${formatIDR(item.total)}</td>
+                                    <td class="text-center"><span class="badge ${badgeWarna}">${persentase}%</span></td>
+                                 </tr>`;
+                });
+            } else {
+                htmlDept = `<tr><td colspan="3" class="text-center text-muted">Data kosong</td></tr>`;
+            }
+
+            if(htmlBody === "") htmlBody = `<tr><td colspan="5" class="text-center text-muted py-4">Tidak ada pergerakan anggaran di rentang ini.</td></tr>`;
+
+            document.getElementById('trxModalDeptSummary').innerHTML = htmlDept;
+            document.getElementById('trxModalBody').innerHTML = htmlBody;
+            
+            // Tambahan warna untuk Total di Pop-up
+            let modalTotalColor = isPendapatan ? 'text-success-custom' : 'text-danger-custom';
+            document.getElementById('trxModalTotal').className = "fw-bold fs-5 " + modalTotalColor;
+            document.getElementById('trxModalTotal').innerText = formatIDR(totalNilai);
+
+            var myModal = new bootstrap.Modal(document.getElementById('trxModal'));
+            myModal.show();
+        }
+
+        function initCharts() {
+            Chart.defaults.font.family = "-apple-system, sans-serif";
+            Chart.defaults.color = '#64748b';
+
+            barChart = new Chart(document.getElementById('chartBar').getContext('2d'), { 
+                type: 'bar', 
+                data: { labels: [], datasets: [] }, 
+                options: { maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { border: { dash: [4, 4] } } } } 
+            });
+            lineChart = new Chart(document.getElementById('chartLine').getContext('2d'), { 
+                type: 'line', 
+                data: { labels: [], datasets: [] }, 
+                options: { maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { border: { dash: [4, 4] } } } } 
+            });
+        }
+
+        function updateCharts(start, end) {
+            const filteredMonths = allMonths.slice(start, end + 1);
+            
+            const filteredRealPend = globalData.realisasi.pendapatan.slice(start, end + 1);
+            const filteredRealBiaya = globalData.realisasi.biaya.slice(start, end + 1);
+            const filteredLrReal = filteredRealPend.map((v, i) => v - filteredRealBiaya[i]);
+
+            const filteredBudPend = globalData.budget.pendapatan.slice(start, end + 1);
+            const filteredBudBiaya = globalData.budget.biaya.slice(start, end + 1);
+            const filteredLrBud = filteredBudPend.map((v, i) => v - filteredBudBiaya[i]);
+
+            barChart.data.labels = filteredMonths;
+            barChart.data.datasets = [
+                { label: 'Pendapatan (Realisasi)', data: filteredRealPend, backgroundColor: '#bbf7d0', barPercentage: 0.6 },
+                { label: 'Biaya (Realisasi)', data: filteredRealBiaya, backgroundColor: '#fecdd3', barPercentage: 0.6 }
+            ];
+            barChart.update();
+
+            lineChart.data.labels = filteredMonths;
+            lineChart.data.datasets = [
+                { 
+                    label: 'Laba/Rugi (Realisasi)', 
+                    data: filteredLrReal, 
+                    borderColor: '#64748b', 
+                    backgroundColor: 'rgba(100, 116, 139, 0.1)', 
+                    fill: true, 
+                    tension: 0.3, 
+                    borderWidth: 2, 
+                    pointBackgroundColor: '#475569' 
+                },
+                { 
+                    label: 'Laba/Rugi (Target Budget)', 
+                    data: filteredLrBud, 
+                    borderColor: '#cbd5e1', 
+                    borderDash: [5, 5], 
+                    fill: false, 
+                    tension: 0.3, 
+                    borderWidth: 2,
+                    pointBackgroundColor: '#94a3b8'
+                }
+            ];
+            lineChart.update();
+        }
+    </script>
+</body>
+</html>
